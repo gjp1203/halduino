@@ -28,44 +28,36 @@ const int PWM_DELAY = 80;
 
 int loopCount = 0;
 int position = START_POSITION;
-
+unsigned long time;
 
 
 void setup()
 {
-  Serial.begin(57600);
+  Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
 
   motor.attach(9);
   motor.writeMicroseconds(0);
-  pinMode(13, OUTPUT);
+  //pinMode(13, OUTPUT);
   servo.attach(6);
   //servo.write(0); 
   //pinMode(A4, INPUT_PULLUP);
 }
 
-void msgReceivedSignal(int blinks) {
-  for(int i = 0; i < blinks; i++) {
-    digitalWrite(13, HIGH-digitalRead(13)); 
-    delay(1000);  
-  }
-}
-
 int readFromBuffer() {
     char buffer[] = {
-      ' ', ' ', ' ', ' ', ' ', ' ', ' '
-    }; // Receive up to 7 bytes
+      ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '
+    }; // Receive up to 12 bytes
 
     while (!Serial.available()); // Wait for characters
-    Serial.readBytesUntil('n', buffer, 7);
+    Serial.readBytesUntil('n', buffer, 12);
     return atoi(buffer);
 }
 
 void washout() {
   servo.write(WASHOUT_POS);  
-  delay(WASHOUT_DELAY);
 }
 
 void induceSwirl() {
@@ -80,20 +72,12 @@ void stopSwirl() {
 }
 
 
-void inspectVial() {
-  setPosition(INSPECT_POSITION);
-  servo.write(position); 
-  delay(DELAY_BEOFRE_SWIRL);
-  induceSwirl();
-  delay(DELAY_AFTER_SPINS);
-}
-
 void setPosition(int pos) {
     position = pos;
 }
 
 void loop() {
-  
+    
   if (Serial.available() > 0) {
       // read the incoming byte:
       incomingByte = Serial.read();
@@ -101,27 +85,25 @@ void loop() {
       switch (incomingByte) {
       case '1':
         setPosition(START_POSITION);
-        msgReceivedSignal(1);
         break;
       case '2':
         setPosition(WASHOUT_POS);
-        msgReceivedSignal(2);
         break;
       case '3':
         setPosition(INSPECT_POSITION);
-        msgReceivedSignal(3);
         break;
       case '4':
         induceSwirl();
-        msgReceivedSignal(4);
         break;        
       default:
         break;
       }
+      //Serial.println("Incoming byte: ");
+      //Serial.println(incomingByte);
+      
   }
-  Serial.println(incomingByte);
-  
+  //Serial.println(position);
   servo.write(position);
-  delay(100);
+  delay(300);
 
 }
