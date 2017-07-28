@@ -8,19 +8,19 @@ char incomingByte = 0;   // for incoming serial data
 int command = 0;
 
 // Positions:
-const int WASHOUT_POS = 120;
+const int WASHOUT_POS = 75;
 
 // Works will with motor raised to 45cm, and exposure of 73399, 
 // and PM set to 1057 with two PM loops:
-const int START_POSITION = 75;
-const int INSPECT_POSITION = 75;
+const int START_POSITION = 60;
+const int INSPECT_POSITION = 60;
 
 // PWM Values:
 const int PWM_GO_VAL = 1057;
 const int PWM_STOP_VAL = 900;
 
 // Cycles:
-const int PWM_LOOPS = 2;
+const int PWM_LOOPS = 3;
 const int SPINS_PER_SAMPLE = 3;
 
 // Delays:
